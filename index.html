@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar Penyewa Baru</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', system-ui, sans-serif; }
+  body { background:#F9FAFB; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; color:#111827; }
+  .card { width:100%; max-width:440px; background:white; border-radius:20px; padding:32px 28px; box-shadow:0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); border:1px solid #F3F4F6; }
+  .icon { width:48px; height:48px; background:#EFF6FF; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  h1 { font-size:24px; font-weight:700; text-align:center; letter-spacing:-0.02em; }
+  .subtitle { text-align:center; font-size:14px; color:#6B7280; margin:8px 0 28px; }
+  label { display:block; font-size:13.5px; font-weight:600; margin-bottom:8px; color:#111827; }
+  .field { margin-bottom:20px; }
+  input { width:100%; height:52px; padding:0 16px; border:1.5px solid #E5E7EB; border-radius:12px; font-size:16px; outline:none; transition:.2s; background:white; }
+  input::placeholder { color:#9CA3AF; }
+  input:focus { border-color:#2563EB; box-shadow:0 0 0 3px #DBEAFE; }
+  input.error { border-color:#EF4444; box-shadow:0 0 0 3px #FEE2E2; }
+  .err { font-size:12.5px; color:#EF4444; margin-top:6px; font-weight:500; display:none; }
+  .err.show { display:block; }
+  .pass-wrap { position:relative; }
+  .pass-wrap input { padding-right:48px; }
+  .eye { position:absolute; right:4px; top:4px; width:44px; height:44px; border:none; background:transparent; cursor:pointer; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#6B7280; }
+  .eye:hover { background:#F9FAFB; }
+  .divider { height:1px; background:#F3F4F6; margin:4px 0; }
+  button.daftar { width:100%; height:52px; border:none; border-radius:14px; background:#2563EB; color:white; font-size:15.5px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(37,99,235,0.28); transition:.2s; margin-top:8px; }
+  button.daftar:hover { background:#1D4ED8; box-shadow:0 6px 18px rgba(37,99,235,0.32); }
+  button.daftar:active { transform:scale(0.98); }
+  .login { text-align:center; font-size:13.5px; color:#6B7280; margin-top:18px; }
+  .login a { font-weight:600; color:#111827; text-decoration:underline; text-underline-offset:3px; decoration-color:#D1D5DB; }
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(80px); background:#111827; color:white; padding:14px 20px; border-radius:14px; display:flex; gap:12px; align-items:center; opacity:0; transition:.35s; box-shadow:0 10px 30px rgba(0,0,0,0.2); pointer-events:none; }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  .check { width:28px; height:28px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9L12 2L21 9V20C21 20.55 20.55 21 20 21H4C3.45 21 3 20.55 3 20V9Z" stroke="#2563EB" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21V12H15V21" stroke="#2563EB" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>Daftar Penyewa Baru</h1>
+  <p class="subtitle">Buat akun untuk mulai menyewa dengan mudah</p>
+  <form id="form">
+    <div class="field">
+      <label for="nama">Nama Lengkap</label>
+      <input id="nama" type="text" placeholder="Contoh: Budi Santoso" autocomplete="name">
+      <p class="err" id="err-nama">Nama lengkap wajib diisi</p>
+    </div>
+    <div class="field">
+      <label for="telp">Nomor Telepon</label>
+      <input id="telp" type="tel" placeholder="Contoh: 0812xxxxxxx" autocomplete="tel">
+      <p class="err" id="err-telp">Nomor telepon wajib diisi</p>
+    </div>
+    <div class="field">
+      <label for="domisili">Domisili</label>
+      <input id="domisili" type="text" placeholder="Contoh: Jakarta Selatan" autocomplete="address-level2">
+      <p class="err" id="err-domisili">Domisili wajib diisi</p>
+    </div>
+    <div class="divider"></div>
+    <div class="field">
+      <label for="pass">Kata Sandi</label>
+      <div class="pass-wrap">
+        <input id="pass" type="password" placeholder="Minimal 6 karakter">
+        <button type="button" class="eye" onclick="toggle('pass', this)" aria-label="Lihat password">👁</button>
+      </div>
+      <p class="err" id="err-pass">Minimal 6 karakter</p>
+    </div>
+    <div class="field">
+      <label for="konfirmasi">Konfirmasi Kata Sandi</label>
+      <div class="pass-wrap">
+        <input id="konfirmasi" type="password" placeholder="Ulangi kata sandi">
+        <button type="button" class="eye" onclick="toggle('konfirmasi', this)" aria-label="Lihat konfirmasi">👁</button>
+      </div>
+      <p class="err" id="err-konfirmasi">Kata sandi tidak cocok</p>
+    </div>
+    <button type="submit" class="daftar">Daftar</button>
+    <p class="login">Sudah punya akun? <a href="#">Masuk di sini.</a></p>
+  </form>
+</div>
+<div class="toast" id="toast">
+  <div class="check">✓</div>
+  <div><div style="font-weight:600; font-size:13.5px;">Pendaftaran berhasil!</div><div style="font-size:12px; opacity:.7; margin-top:2px;">Akun penyewa Anda telah dibuat.</div></div>
+</div>
+<script>
+function toggle(id, btn){
+  const i = document.getElementById(id);
+  i.type = i.type === 'password' ? 'text' : 'password';
+  btn.textContent = i.type === 'text' ? '🙈' : '👁';
+}
+document.getElementById('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  let ok = true;
+  const nama = document.getElementById('nama');
+  const telp = document.getElementById('telp');
+  const dom = document.getElementById('domisili');
+  const pass = document.getElementById('pass');
+  const kon = document.getElementById('konfirmasi');
+  // reset
+  document.querySelectorAll('.err').forEach(el=>el.classList.remove('show'));
+  document.querySelectorAll('input').forEach(el=>el.classList.remove('error'));
+  if(!nama.value.trim()){ show('err-nama', nama); ok=false; }
+  if(!telp.value.trim()){ show('err-telp', telp); ok=false; }
+  if(!dom.value.trim()){ show('err-domisili', dom); ok=false; }
+  if(pass.value.length < 6){ show('err-pass', pass); ok=false; }
+  if(kon.value !== pass.value || !kon.value){ show('err-konfirmasi', kon); ok=false; }
+  if(ok){
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 3000);
+    this.reset();
+  }
+  function show(errId, input){
+    document.getElementById(errId).classList.add('show');
+    input.classList.add('error');
+  }
+});
+</script>
+</body>
+</html>
